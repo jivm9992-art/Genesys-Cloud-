@@ -2,82 +2,184 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Simulador Genesys - Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emulador Genesys Cloud - Capacitación</title>
     <style>
-        /* Estilos básicos para el ejemplo */
-        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: #f4f5f7; margin: 0; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, sans-serif; }
+        body { background-color: #f4f5f7; height: 100vh; display: flex; flex-direction: column; }
+        
+        /* PANTALLA LOGIN */
         #login-container { display: flex; height: 100vh; justify-content: center; align-items: center; }
         .login-box { background: white; padding: 40px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); text-align: center; }
-        .btn { padding: 10px 20px; margin: 10px; cursor: pointer; border: none; border-radius: 4px; color: white; font-weight: bold; }
+        .btn { padding: 12px 20px; margin: 10px; cursor: pointer; border: none; border-radius: 4px; color: white; font-weight: bold; font-size: 14px;}
         .btn-asesor { background: #1a3b8b; }
-        .btn-formador { background: #e03c31; } /* Color ENGIE/Alerta */
+        .btn-formador { background: #e03c31; }
+        .btn:hover { opacity: 0.9; }
+
+        /* VISTAS DE TRABAJO */
+        #vista-asesor, #vista-formador { display: none; height: 100vh; flex-direction: column; }
         
-        /* Ocultamos las vistas de trabajo al inicio */
-        #vista-asesor, #vista-formador { display: none; padding: 20px; }
+        /* ESTILOS DEL SIMULADOR */
+        .header { height: 50px; background-color: #ffffff; border-bottom: 1px solid #e2e2e2; display: flex; align-items: center; padding: 0 20px; justify-content: space-between; }
+        .header-tabs { display: flex; gap: 10px; }
+        .tab { padding: 5px 15px; background-color: #e8e8e8; border-radius: 5px 5px 0 0; font-size: 14px; display: flex; align-items: center; gap: 8px; }
+        .workspace { display: grid; grid-template-columns: 2fr 1fr 1fr; flex: 1; overflow: hidden; }
+        .panel { background-color: #ffffff; border-right: 1px solid #e2e2e2; display: flex; flex-direction: column; }
+        .panel-header { padding: 15px; border-bottom: 1px solid #e2e2e2; font-weight: 600; font-size: 14px; color: #333; }
+        
+        .chat-area { flex: 1; padding: 20px; overflow-y: auto; background-color: #fafbfc; display: flex; flex-direction: column; }
+        .message { margin-bottom: 20px; max-width: 70%; }
+        .message.customer { align-self: flex-start; }
+        .message.agent { align-self: flex-end; }
+        .bubble { padding: 12px 16px; border-radius: 8px; font-size: 14px; line-height: 1.4; color: #333; }
+        .customer .bubble { background-color: #eef2f7; }
+        .agent .bubble { background-color: #fce8e6; }
+        
+        .input-area { padding: 15px; border-top: 1px solid #e2e2e2; display: flex; gap: 10px; background: #fff;}
+        .input-area input { flex: 1; padding: 10px; border: 1px solid #ccc; border-radius: 4px; }
+        
+        /* ESTILOS PANEL FORMADOR */
+        .formador-workspace { display: flex; flex: 1; padding: 20px; gap: 20px; }
+        .formador-controles { background: #fff; padding: 20px; border-radius: 8px; flex: 1; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
     </style>
 </head>
 <body>
 
     <div id="login-container">
         <div class="login-box">
-            <h2>Ingreso al Simulador Genesys</h2>
-            <p>Selecciona tu perfil para continuar:</p>
-            <button class="btn btn-asesor" onclick="iniciarSesion('asesor')">Entrar como Asesor</button>
-            <button class="btn btn-formador" onclick="iniciarSesion('formador')">Entrar como Formador</button>
+            <h2 style="margin-bottom: 20px; color:#333;">Simulador Genesys - ENGIE</h2>
+            <p style="margin-bottom: 20px; color:#666;">Selecciona tu perfil de ingreso:</p>
+            <button class="btn btn-asesor" onclick="window.iniciarSesion('asesor')">Ingresar como Asesor</button>
+            <br>
+            <button class="btn btn-formador" onclick="window.iniciarSesion('formador')">Ingresar como Formador</button>
         </div>
     </div>
 
     <div id="vista-asesor">
-        <h2>🖥️ Pantalla del Asesor (Genesys Cloud)</h2>
-        <p>Esperando interacción...</p>
-        <div class="chat-area" id="chat-asesor" style="background: white; height: 300px; border: 1px solid #ccc; padding: 10px; overflow-y: auto;"></div>
-        <input type="text" id="input-asesor" placeholder="Escribe al cliente..." style="width: 80%; padding: 10px;">
-        <button onclick="enviarMensajeAsesor()">Enviar</button>
-    </div>
-
-    <div id="vista-formador">
-        <h2>👨‍🏫 Panel del Formador</h2>
-        <p>Monitoreo en tiempo real de la sala.</p>
-        <div style="display: flex; gap: 20px;">
-            <div style="flex: 1;">
-                <h3>Chat en vivo:</h3>
-                <div class="chat-area" id="chat-formador" style="background: white; height: 300px; border: 1px solid #ccc; padding: 10px; overflow-y: auto;"></div>
+        <div class="header">
+            <div class="header-tabs"><div class="tab">Fer Bouché</div></div>
+            <div><span style="font-size: 13px; font-weight: bold; color: #1a3b8b;">En llamada - Conectado</span></div>
+        </div>
+        <div class="workspace">
+            <div class="panel">
+                <div class="panel-header">Interacción de Facebook</div>
+                <div class="chat-area" id="chat-asesor"></div>
+                <div class="input-area">
+                    <input type="text" id="input-asesor" placeholder="Escribe tu respuesta..." onkeypress="if(event.key === 'Enter') window.enviarMensaje('agent')">
+                    <button class="btn btn-asesor" style="margin:0;" onclick="window.enviarMensaje('agent')">Enviar</button>
+                </div>
             </div>
-            <div style="flex: 1; background: #e8e8e8; padding: 20px; border-radius: 8px;">
-                <h3>Controles de Simulación</h3>
-                <button class="btn btn-formador" onclick="lanzarInteraccion()">Lanzar Interacción de ENGIE</button>
-                <hr>
-                <p>Enviar mensaje manual como cliente:</p>
-                <input type="text" id="input-formador" placeholder="Ej: No me permite seleccionarlo..." style="width: 100%; padding: 10px; margin-bottom: 10px;">
-                <button class="btn" style="background: #333;" onclick="enviarMensajeCliente()">Enviar como Cliente</button>
+            <div class="panel"><div class="panel-header">Perfil</div><div style="padding:15px; font-size:14px;"><strong>Cliente:</strong> Fer Bouché<br><br><strong>Motivo:</strong> Aclaración de factura</div></div>
+            <div class="panel">
+                <div class="panel-header">Códigos de conclusión</div>
+                <div style="padding:15px;">
+                    <select style="width: 100%; padding: 8px; margin-bottom: 15px;">
+                        <option>Seleccionar código...</option>
+                        <option>Aclaración de factura</option>
+                        <option>Actualización de datos fiscales</option>
+                    </select>
+                    <button class="btn btn-asesor" style="width:100%; margin:0;">Listo</button>
+                </div>
             </div>
         </div>
     </div>
 
-    <script>
-        // 1. Función para cambiar de pantalla según el botón
-        function iniciarSesion(perfil) {
+    <div id="vista-formador">
+        <div class="header" style="background:#333; color:white;">
+            <div style="padding: 15px; font-weight: bold;">Panel de Control - Formador</div>
+        </div>
+        <div class="formador-workspace">
+            <div class="panel" style="flex:1; border-radius:8px; overflow:hidden; border: 1px solid #ccc;">
+                <div class="panel-header" style="background:#e8e8e8;">Monitor de Chat en Vivo</div>
+                <div class="chat-area" id="chat-formador" style="background: white;"></div>
+            </div>
+            <div class="formador-controles">
+                <h3 style="margin-bottom: 15px;">Simular Mensaje de Cliente</h3>
+                <input type="text" id="input-formador" placeholder="Escribe lo que diría el cliente..." style="width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 4px;" onkeypress="if(event.key === 'Enter') window.enviarMensaje('customer')">
+                <button class="btn btn-formador" style="margin: 0; width: 100%;" onclick="window.enviarMensaje('customer')">Enviar como Cliente</button>
+                
+                <hr style="margin: 20px 0; border: 0; border-top: 1px solid #eee;">
+                <h3 style="margin-bottom: 15px;">Acciones Rápidas</h3>
+                <button class="btn" style="background: #333; margin: 0 0 10px 0; width: 100%;" onclick="window.lanzarInteraccion()">Lanzar Interacción Inicial Automática</button>
+                <button class="btn" style="background: #888; margin: 0; width: 100%;" onclick="window.limpiarChat()">Limpiar Pantallas (Nueva Sesión)</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+        import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, serverTimestamp, deleteDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+
+        // Tus credenciales de genesys-6497c
+        const firebaseConfig = {
+            apiKey: "AIzaSyCKDP0jiQE5EE8Ew3MA-OVwxFxlIPQ5tBg",
+            authDomain: "genesys-6497c.firebaseapp.com",
+            projectId: "genesys-6497c",
+            storageBucket: "genesys-6497c.firebasestorage.app",
+            messagingSenderId: "486958005336",
+            appId: "1:486958005336:web:c5119b5937f6004cc4de2d",
+            measurementId: "G-YW147BY9HW"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const salaRef = collection(db, "sala_capacitacion");
+        const q = query(salaRef, orderBy("timestamp", "asc"));
+
+        window.iniciarSesion = function(perfil) {
             document.getElementById('login-container').style.display = 'none';
-            
             if (perfil === 'asesor') {
-                document.getElementById('vista-asesor').style.display = 'block';
-                iniciarEscuchaFirebase('asesor'); // Conectar el asesor a la BD
-            } else if (perfil === 'formador') {
-                document.getElementById('vista-formador').style.display = 'block';
-                iniciarEscuchaFirebase('formador'); // Conectar el formador a la BD
+                document.getElementById('vista-asesor').style.display = 'flex';
+            } else {
+                document.getElementById('vista-formador').style.display = 'flex';
             }
+            escucharMensajes();
+        };
+
+        window.enviarMensaje = async function(remitente) {
+            let inputElement = remitente === 'agent' ? document.getElementById('input-asesor') : document.getElementById('input-formador');
+            let texto = inputElement.value.trim();
+
+            if (texto !== "") {
+                await addDoc(salaRef, { texto: texto, emisor: remitente, timestamp: serverTimestamp() });
+                inputElement.value = ""; 
+            }
+        };
+
+        function escucharMensajes() {
+            onSnapshot(q, (snapshot) => {
+                const areaAsesor = document.getElementById('chat-asesor');
+                const areaFormador = document.getElementById('chat-formador');
+                
+                areaAsesor.innerHTML = '';
+                areaFormador.innerHTML = '';
+
+                snapshot.forEach((doc) => {
+                    const data = doc.data();
+                    const burbujaHtml = `<div class="message ${data.emisor}"><div class="bubble">${data.texto}</div></div>`;
+                    areaAsesor.innerHTML += burbujaHtml;
+                    areaFormador.innerHTML += burbujaHtml;
+                });
+
+                areaAsesor.scrollTop = areaAsesor.scrollHeight;
+                areaFormador.scrollTop = areaFormador.scrollHeight;
+            });
         }
 
-        // Lógica simulada de Firebase (Aquí iría tu código real de Firebase)
-        function iniciarEscuchaFirebase(perfil) {
-            console.log(`Conectando perfil de ${perfil} a la base de datos...`);
-            /* Aquí usarías: 
-               firebase.database().ref('sesion_actual/chat').on('value', (snapshot) => {
-                   const mensajes = snapshot.val();
-                   actualizarPantallas(mensajes);
-               });
-            */
-        }
+        window.lanzarInteraccion = async function() {
+            await addDoc(salaRef, { texto: "Buenas tardes", emisor: "customer", timestamp: serverTimestamp() });
+            setTimeout(async () => {
+                await addDoc(salaRef, { texto: "Hola 👋 Enseguida uno de nuestros asesores te atenderá. Bienvenido a ENGIE", emisor: "customer", timestamp: serverTimestamp() });
+            }, 2000);
+            setTimeout(async () => {
+                await addDoc(salaRef, { texto: "Me podrías aclarar una factura porfa", emisor: "customer", timestamp: serverTimestamp() });
+            }, 5000);
+        };
+
+        window.limpiarChat = async function() {
+            const querySnapshot = await getDocs(salaRef);
+            querySnapshot.forEach((documento) => { deleteDoc(documento.ref); });
+        };
     </script>
 </body>
 </html>
