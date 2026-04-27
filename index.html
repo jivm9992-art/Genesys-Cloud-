@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Simulador Genesys - Login</title>
+    <style>
+        /* Estilos básicos para el ejemplo */
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: #f4f5f7; margin: 0; }
+        #login-container { display: flex; height: 100vh; justify-content: center; align-items: center; }
+        .login-box { background: white; padding: 40px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); text-align: center; }
+        .btn { padding: 10px 20px; margin: 10px; cursor: pointer; border: none; border-radius: 4px; color: white; font-weight: bold; }
+        .btn-asesor { background: #1a3b8b; }
+        .btn-formador { background: #e03c31; } /* Color ENGIE/Alerta */
+        
+        /* Ocultamos las vistas de trabajo al inicio */
+        #vista-asesor, #vista-formador { display: none; padding: 20px; }
+    </style>
+</head>
+<body>
+
+    <div id="login-container">
+        <div class="login-box">
+            <h2>Ingreso al Simulador Genesys</h2>
+            <p>Selecciona tu perfil para continuar:</p>
+            <button class="btn btn-asesor" onclick="iniciarSesion('asesor')">Entrar como Asesor</button>
+            <button class="btn btn-formador" onclick="iniciarSesion('formador')">Entrar como Formador</button>
+        </div>
+    </div>
+
+    <div id="vista-asesor">
+        <h2>🖥️ Pantalla del Asesor (Genesys Cloud)</h2>
+        <p>Esperando interacción...</p>
+        <div class="chat-area" id="chat-asesor" style="background: white; height: 300px; border: 1px solid #ccc; padding: 10px; overflow-y: auto;"></div>
+        <input type="text" id="input-asesor" placeholder="Escribe al cliente..." style="width: 80%; padding: 10px;">
+        <button onclick="enviarMensajeAsesor()">Enviar</button>
+    </div>
+
+    <div id="vista-formador">
+        <h2>👨‍🏫 Panel del Formador</h2>
+        <p>Monitoreo en tiempo real de la sala.</p>
+        <div style="display: flex; gap: 20px;">
+            <div style="flex: 1;">
+                <h3>Chat en vivo:</h3>
+                <div class="chat-area" id="chat-formador" style="background: white; height: 300px; border: 1px solid #ccc; padding: 10px; overflow-y: auto;"></div>
+            </div>
+            <div style="flex: 1; background: #e8e8e8; padding: 20px; border-radius: 8px;">
+                <h3>Controles de Simulación</h3>
+                <button class="btn btn-formador" onclick="lanzarInteraccion()">Lanzar Interacción de ENGIE</button>
+                <hr>
+                <p>Enviar mensaje manual como cliente:</p>
+                <input type="text" id="input-formador" placeholder="Ej: No me permite seleccionarlo..." style="width: 100%; padding: 10px; margin-bottom: 10px;">
+                <button class="btn" style="background: #333;" onclick="enviarMensajeCliente()">Enviar como Cliente</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 1. Función para cambiar de pantalla según el botón
+        function iniciarSesion(perfil) {
+            document.getElementById('login-container').style.display = 'none';
+            
+            if (perfil === 'asesor') {
+                document.getElementById('vista-asesor').style.display = 'block';
+                iniciarEscuchaFirebase('asesor'); // Conectar el asesor a la BD
+            } else if (perfil === 'formador') {
+                document.getElementById('vista-formador').style.display = 'block';
+                iniciarEscuchaFirebase('formador'); // Conectar el formador a la BD
+            }
+        }
+
+        // Lógica simulada de Firebase (Aquí iría tu código real de Firebase)
+        function iniciarEscuchaFirebase(perfil) {
+            console.log(`Conectando perfil de ${perfil} a la base de datos...`);
+            /* Aquí usarías: 
+               firebase.database().ref('sesion_actual/chat').on('value', (snapshot) => {
+                   const mensajes = snapshot.val();
+                   actualizarPantallas(mensajes);
+               });
+            */
+        }
+    </script>
+</body>
+</html>
